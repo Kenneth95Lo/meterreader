@@ -1,8 +1,9 @@
 import { Nem12Parser, Nem12ParserWithFile, Nem12ParserWithRawCsv } from '../../classes/nem12-parser'
+import { MeterReadingModel } from '../../model/meter-reading-model'
 
 class MeterReadingController {
 
-    filePath: string
+    private filePath: string
 
     constructor(filePath: string){
         this.filePath = filePath
@@ -13,9 +14,16 @@ class MeterReadingController {
             const parser: Nem12Parser = new Nem12ParserWithFile(this.filePath)
             const parsedData = await parser.parseData()
 
-            const adaptedData = parser.adaptData(parsedData)
+            await MeterReadingModel.bulkCreate(parsedData, { validate: true })
 
-            //get the sum of 
+        }catch(error){
+            if (error.errorName === "DataParse"){
+                console.log("Save to server log --> Failed to parse data")
+            }
+            console.log("Save to server log --> Failed to insert into DB")
+            
         }
     }
 }
+
+export { MeterReadingController }
