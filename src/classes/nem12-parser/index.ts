@@ -1,15 +1,8 @@
 import * as fs from 'fs';
 import * as csv from 'csv-parser';
 
-import Record100 from '../nem12-record/nem12-100-record';
-import Record200 from '../nem12-record/nem12-200-record';
-import Record300 from '../nem12-record/nem12-300-record';
-import Record500 from '../nem12-record/nem12-500-record';
-import Record900 from '../nem12-record/nem12-900-record';
-
 export interface Nem12Parser {
     parseData()
-    adaptData(parsedData)
 }
 
 export class Nem12ParserWithFile implements Nem12Parser {
@@ -20,29 +13,29 @@ export class Nem12ParserWithFile implements Nem12Parser {
     }
     async parseData() {
         const results = [];
+        let currentNmi = ''
         return new Promise((resolve, reject) => {
             fs.createReadStream(this.filePath)
             .pipe(csv())
-            .on('data', data => results.push(data))
+            .on('data', row => {
+                switch(row[0]){
+                    case "200":
+                        currentNmi = row[1]
+                    case "300":
+                        let currentTimestamp = row[1]
+                        let intervalValues = row.slice(2, 49)
+                        let currTotal = intervalValues.reduce((acc, curr) => {return acc + curr ?? 0}, 0)
+                        results.push({
+                            nmi: currentNmi,
+                            consumption: currTotal,
+                            timestamp: currentTimestamp
+                        })
+                    case "900":
+                        break
+                }
+            })
             .on('end', () => resolve(results))
-            .on('error', error => reject(error))
-        })
-    }
-
-    adaptData(parsedData) {
-        return parsedData.map( row => {
-            switch(row[0]){
-                case "100":
-                    return new Record100(row[1], row[2], row[3])
-                case "200":
-                    return new Record200(row[1], row[2], row[3])
-                case "300":
-                    return new Record300(row[1], row[2], row[3])
-                case "500":
-                    return new Record500(row[1], row[2], row[3])
-                case "900":
-                    return new Record900(row[1], row[2], row[3])
-            }
+            .on('error', error => reject({ errorMessage: error.message, errorName: 'DataParse' }))
         })
     }
 }
