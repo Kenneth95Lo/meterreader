@@ -1,4 +1,4 @@
-import { Nem12Parser, Nem12ParserWithFile, Nem12ParserWithRawCsv } from '../classes/nem12-parser'
+import { Nem12Parser, Nem12ParserWithFile, Nem12ParserWithRawCsv } from '../../classes/nem12-parser'
 
 class MeterReadingController {
 
