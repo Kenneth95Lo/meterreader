@@ -1,7 +1,10 @@
 import { Sequelize, DataTypes, Model as SequelizeModel } from 'sequelize';
 import DbConfig from '../config/db-config';
 
-const sequelize = new Sequelize(DbConfig)
+const sequelize = new Sequelize("postgres://user:password@localhost:5432/database", {
+    dialect: "postgres",
+    logging: false
+})
 
 class MeterReadingModel extends SequelizeModel {}
 
