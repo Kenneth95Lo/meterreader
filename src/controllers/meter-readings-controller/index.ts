@@ -13,12 +13,12 @@ class MeterReadingController {
         try{
             const parser: Nem12Parser = new Nem12ParserWithFile(this.filePath)
             const parsedData = await parser.parseData()
-
             await MeterReadingModel.bulkCreate(parsedData, { validate: true })
 
         }catch(error){
             if (error.errorName === "DataParse"){
                 console.log("Save to server log --> Failed to parse data")
+                return;
             }
             console.log("Save to server log --> Failed to insert into DB")
             

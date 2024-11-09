@@ -1,7 +1,7 @@
 import { Sequelize, DataTypes, Model as SequelizeModel } from 'sequelize';
 import DbConfig from '../config/db-config';
 
-const sequelize = new Sequelize("postgres://user:password@localhost:5432/database", {
+const sequelize = new Sequelize(`postgres://${DbConfig.user}:${DbConfig.password}@${DbConfig.host}:${DbConfig.port}/${DbConfig.database}}`, {
     dialect: "postgres",
     logging: false
 })
