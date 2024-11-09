@@ -1,35 +1,39 @@
 import * as fs from 'fs';
 import * as csv from 'csv-parser';
 
-export interface Nem12Parser {
-    parseData()
+interface Nem12Parser {
+    parseData(): Promise<any>
 }
 
-export class Nem12ParserWithFile implements Nem12Parser {
-    filePath: string
+class Nem12ParserWithFile implements Nem12Parser {
+    private filePath: string
 
-    constructor(filePath: string){
+    constructor(filePath){
         this.filePath = filePath
     }
     async parseData() {
         const results = [];
         let currentNmi = ''
         return new Promise((resolve, reject) => {
-            fs.createReadStream(this.filePath)
+            fs.createReadStream(`${__dirname}/${this.filePath}`)
             .pipe(csv())
             .on('data', row => {
-                switch(row[0]){
+                // headers.map
+                const children = Object.values(row)
+                switch(children[0]){
                     case "200":
-                        currentNmi = row[1]
+                        currentNmi = String(children[1])
+                        break
                     case "300":
-                        let currentTimestamp = row[1]
-                        let intervalValues = row.slice(2, 49)
-                        let currTotal = intervalValues.reduce((acc, curr) => {return acc + curr ?? 0}, 0)
+                        let currentTimestamp = children[1]
+                        let intervalValues = children.slice(2, 49)
+                        let currTotal = intervalValues.reduce((acc, curr) => {return Number(acc) + Number(curr)}, 0)
                         results.push({
                             nmi: currentNmi,
                             consumption: currTotal,
                             timestamp: currentTimestamp
                         })
+                        break
                     case "900":
                         break
                 }
@@ -40,14 +44,16 @@ export class Nem12ParserWithFile implements Nem12Parser {
     }
 }
 
-export class Nem12ParserWithRawCsv implements Nem12Parser{
-    rawCsv: string
+class Nem12ParserWithRawCsv implements Nem12Parser{
+    private rawCsv: string
 
     constructor(rawCsv){
         this.rawCsv = rawCsv
     }
 
-    parseData() {
+    async parseData() {
         // parse raw data
     }
 }
+
+export { Nem12ParserWithFile, Nem12ParserWithRawCsv,Nem12Parser }
