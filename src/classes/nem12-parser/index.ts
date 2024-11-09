@@ -11,11 +11,11 @@ class Nem12ParserWithFile implements Nem12Parser {
     constructor(filePath){
         this.filePath = filePath
     }
-    async parseData() {
+    async parseData(): Promise<any[]> {
         const results = [];
         let currentNmi = ''
         return new Promise((resolve, reject) => {
-            fs.createReadStream(`${__dirname}/${this.filePath}`)
+            fs.createReadStream(this.filePath)
             .pipe(csv())
             .on('data', row => {
                 // headers.map
