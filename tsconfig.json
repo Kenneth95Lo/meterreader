@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "target": "ES6"
   },
-  "include": ["src"],
+  "include": ["src", "src/**/*.ts", "**/__tests__/**/*.ts"],
   "exclude": ["node_modules"]
 }
