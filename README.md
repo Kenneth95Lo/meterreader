@@ -1,4 +1,4 @@
-# Project Name
+# NEM12 Meter Reading
 
 This project is a Node.js application written in TypeScript that supports reading CSV data from a file or CSV string and interacts with a PostgreSQL database using Sequelize ORM. The code adheres to the SOLID principles for clean and maintainable software design.
 
