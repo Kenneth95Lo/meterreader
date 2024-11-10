@@ -18,7 +18,6 @@ class Nem12ParserWithFile implements Nem12Parser {
             fs.createReadStream(this.filePath)
             .pipe(csv())
             .on('data', row => {
-                // headers.map
                 const children = Object.values(row)
                 switch(children[0]){
                     case "200":
