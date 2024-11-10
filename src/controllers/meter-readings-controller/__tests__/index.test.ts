@@ -11,10 +11,11 @@ describe("Meter Reading Controller Tests", () => {
     })
 
     it('should fail when unable to parse data', async ()=>{
-        // const bulkCreateSpy = jest.spyOn(MeterReadingModel, 'bulkCreate').mockResolvedValueOnce([])
-        // const mrController = new MeterReadingController(__dirname + '/../../../__mocks__/mock-nem12.csv')
-        // await mrController.processMeterReadingsCsv()
-        // expect(bulkCreateSpy).toHaveBeenCalledTimes(1);
+        const bulkCreateSpy = jest.spyOn(MeterReadingModel, 'bulkCreate').mockResolvedValueOnce([])
+        jest.spyOn(Nem12ParserWithFile.prototype, 'parseData').mockRejectedValueOnce({reason: "mock rejected"})
+        const mrController = new MeterReadingController(__dirname + '/../../../__mocks__/mock-nem12.csv')
+        await mrController.processMeterReadingsCsv()
+        expect(bulkCreateSpy).toHaveBeenCalledTimes(0);
 
     })
 })
