@@ -49,4 +49,5 @@ This will start the application and execute the main logic.
  ├── controllers/        # Controllers that handle requests and responses
  ├── models/             # Sequelize models
  ├── config/             # Configuration files (e.g., database)
+ ├── service/            # Utils
  └── index.ts            # Entry point for the application
